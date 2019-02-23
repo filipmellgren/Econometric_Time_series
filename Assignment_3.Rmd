@@ -1,0 +1,59 @@
+---
+title: "Assignment 3"
+author: "Filip Mellgren"
+date: '2019-02-23'
+output: 
+  pdf_document:
+    df_print: tibble
+    highlight: tango
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Theoretical exercises
+
+
+
+
+# Empirical exercises
+Do exercises 10a-10g in the textbook (p.340)
+
+- Remark 1: It is possible that the
+values you obtain for the F-statistics, p-values and correlations are different than those
+reported since the sample is extended. However, the main conclusions should be the same. 
+
+- Remark 2: Exercise d. is optional and so is the part on the forecast error variance in e. (but you could use the command fevd in STATA to answer these questions).
+
+- Remark 3: You find the appropriate specifications for the variables st
+, $\Delta$lip, and $\Delta$ur described in the text to exercise 9 (p.339).
+
+
+### 10: 
+Estimate the three-VAR beginning in 1961Q1 and use the ordering such that $\Delta lip_t$ is causally prior to $\Delta ur_t$ and that $\Delta ur_t$ is causally prior to $s_t$.
+
+### 10 a:
+If you perform a test to determine whether $s_t$ Granger causes $\Delta lip_t$, you should find that the F-statistic is 2.44 with a prob-value of 0.065. How do you interpret this result?
+```{r}
+
+```
+
+### 10 b:
+Verify that $s_t$ Granger causes $\Delta unemp_t$. You should find that the F statistic is 5.93 with a prob value of less than 0.001.
+
+### 10 c:
+It turns out that the correaltion coefficient between $e_{1t}$ and $e_{2t}$ is -0.72. The correlation between $e_{1t}$ and $e_{3t}$ is -0.11 and between $e_{2t}$ and $e_{3t}$ is 0.10. Explain why the oredring of a Choleski composition is likely to be important for obtaining the impulse responses.
+
+### 10 e:
+Now estimate the model using the levels of $lip_t$ and $ur_t$. DO you now find a lag length of 5 appropriate?
+
+### 10 f:
+Obtain the impulse response function from the model using $\Delta lip_t, \Delta ur_t$ and $s_t$. Show that a positive shock to the industrial production induces a decline in the unemployment rate that lasts six quarters. Then, $\Delta ur_t$ overshoots its long run level before returning to zero.
+
+### 10 g: 
+Reverse the ordering and explain why the results depend on whether or not $\Delta lip_t$ proceeds $\Delta ur_t$
+
+
+

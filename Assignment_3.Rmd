@@ -45,6 +45,7 @@ Estimate the three-VAR beginning in 1961Q1 and use the ordering such that $\Delt
 df <- as_tibble(import("A3_2019_data.dta"))
 ```
 
+We begin by defining the variables we are going to include in our analysis.
 ```{r}
 # Make the date variable a number
 df <- df %>% mutate(year = as.numeric(str_sub(DATE, start = 1, end = 4)),
@@ -56,9 +57,20 @@ df <- df %>% mutate(dlip = log(indprod)-log(lag(indprod)),
                     dur = urate - lag(urate),
                     s = r10 - tbill)
 ```
+Do we need to check for stationarity here?
+```{r}
+# Eventually, stationarity checks.
+```
+The lag length is already determined to be 3. 
+
 
 ```{r}
 # Estimate the 3 VAR, with the ordering dlip, dur, s
+# Page 310 and forward looks useful
+dlip_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+                 lag(dur) + lag(dur,2) + lag(dur,3) + 
+                 lag(s) + lag(s,2) + lag(s,3), data = df)
+
 ```
 
 ### 10 a:

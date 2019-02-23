@@ -10,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
 ```
 
 # Theoretical exercises
@@ -30,30 +30,73 @@ reported since the sample is extended. However, the main conclusions should be t
 - Remark 3: You find the appropriate specifications for the variables st
 , $\Delta$lip, and $\Delta$ur described in the text to exercise 9 (p.339).
 
+```{r}
+# Load necessary packages
+library(rio)
+library(tidyverse)
+library(vars)
+```
+
 
 ### 10: 
 Estimate the three-VAR beginning in 1961Q1 and use the ordering such that $\Delta lip_t$ is causally prior to $\Delta ur_t$ and that $\Delta ur_t$ is causally prior to $s_t$.
+```{r}
+# Load the data
+df <- as_tibble(import("A3_2019_data.dta"))
+```
+
+```{r}
+# Make the date variable a number
+df <- df %>% mutate(year = as.numeric(str_sub(DATE, start = 1, end = 4)),
+                Q = as.numeric(str_sub(DATE,-1, -1)),
+                DATE = year + (Q-1)/4)
+
+# Need to define some new variables as well
+df <- df %>% mutate(dlip = log(indprod)-log(lag(indprod)), 
+                    dur = urate - lag(urate),
+                    s = r10 - tbill)
+```
+
+```{r}
+# Estimate the 3 VAR, with the ordering dlip, dur, s
+```
 
 ### 10 a:
 If you perform a test to determine whether $s_t$ Granger causes $\Delta lip_t$, you should find that the F-statistic is 2.44 with a prob-value of 0.065. How do you interpret this result?
 ```{r}
-
+# might use grangertest()
 ```
 
 ### 10 b:
 Verify that $s_t$ Granger causes $\Delta unemp_t$. You should find that the F statistic is 5.93 with a prob value of less than 0.001.
+```{r}
+# might use grangertest()
+```
 
 ### 10 c:
-It turns out that the correaltion coefficient between $e_{1t}$ and $e_{2t}$ is -0.72. The correlation between $e_{1t}$ and $e_{3t}$ is -0.11 and between $e_{2t}$ and $e_{3t}$ is 0.10. Explain why the oredring of a Choleski composition is likely to be important for obtaining the impulse responses.
+It turns out that the correlation coefficient between $e_{1t}$ and $e_{2t}$ is -0.72. The correlation between $e_{1t}$ and $e_{3t}$ is -0.11 and between $e_{2t}$ and $e_{3t}$ is 0.10. Explain why the ordering of a Choleski composition is likely to be important for obtaining the impulse responses.
+
 
 ### 10 e:
-Now estimate the model using the levels of $lip_t$ and $ur_t$. DO you now find a lag length of 5 appropriate?
+Now estimate the model using the levels of $lip_t$ and $ur_t$. Do you now find a lag length of 5 appropriate?
+
+```{r}
+df <- df %>% mutate(lip = log(indprod))
+```
 
 ### 10 f:
 Obtain the impulse response function from the model using $\Delta lip_t, \Delta ur_t$ and $s_t$. Show that a positive shock to the industrial production induces a decline in the unemployment rate that lasts six quarters. Then, $\Delta ur_t$ overshoots its long run level before returning to zero.
 
+```{r}
+
+```
+
+
 ### 10 g: 
 Reverse the ordering and explain why the results depend on whether or not $\Delta lip_t$ proceeds $\Delta ur_t$
 
+```{r}
+
+```
 
 

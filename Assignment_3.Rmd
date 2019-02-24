@@ -17,11 +17,11 @@ knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
 ## 1
 ### a: 
 
-Show that $Cov(z_t, \varepsilon_{yt}) \neq 0$.
+Show that $* = Cov(z_t, \varepsilon_{yt}) \neq 0$.
 
-- Recall the formula for covariance: $Cov(z_t, \varepsilon_{yt}) = E(z_t\varepsilon_{yt})-E(z_t)E(\varepsilon_{yt})$. Because $\varepsilon_{yt} \sim WN(0,\sigma_y^2)$, we obtain: $Cov(z_t, \varepsilon_{yt}) = E(z_t\varepsilon_{yt})$. 
+- Recall the formula for covariance: $Cov(z_t, \varepsilon_{yt}) = E(z_t\varepsilon_{yt})-E(z_t)E(\varepsilon_{yt})$. Because $\varepsilon_{yt} \sim WN(0,\sigma_y^2)$, we obtain: $* = E(z_t\varepsilon_{yt})$. 
 
-- Next, expand the the expression for $y_t$ in the expression for $z_t$: $E(z_t \varepsilon_{yt}) = E[(-b_{21}[(b_{12}z_t + \gamma_{11}y_{t-1} + \gamma_{12}z_{t-1} + \varepsilon_{yt}] + \gamma_{21}y_{t-1}+\gamma_{22}z_{t-1} + \varepsilon_{zt})\varepsilon_{yt}] =*$. 
+- Next, expand the the expression for $y_t$ in the expression for $z_t$: $* = E[(-b_{21}[(b_{12}z_t + \gamma_{11}y_{t-1} + \gamma_{12}z_{t-1} + \varepsilon_{yt}] + \gamma_{21}y_{t-1}+\gamma_{22}z_{t-1} + \varepsilon_{zt})\varepsilon_{yt}]$. 
 
 - Now distribute $\varepsilon_{yt}$ over the system: $* = E(-b_{21}[(b_{12}z_t + \gamma_{11}y_{t-1} + \gamma_{12}z_{t-1} + \varepsilon_{yt}]\varepsilon_{yt} + \gamma_{21}y_{t-1}\varepsilon_{yt} + \gamma_{22}z_{t-1}\varepsilon_{yt} + \varepsilon_{zt}\varepsilon_{yt})$
 
@@ -32,10 +32,12 @@ Show that $Cov(z_t, \varepsilon_{yt}) \neq 0$.
 
 - Distibute $\varepsilon_{yt}$: $* = -b_{21}E([(b_{12}z_t\varepsilon_{yt} + \gamma_{11}y_{t-1}\varepsilon_{yt} + \gamma_{12}z_{t-1}\varepsilon_{yt} + \varepsilon_{yt}\varepsilon_{yt}])$
 
-- Expand the expectation: $-b_{21}[E(b_{12}z_t\varepsilon_{yt})+ E(\gamma_{11}y_{t-1}\varepsilon_{yt}) + E(\gamma_{12}z_{t-1}\varepsilon_{yt}) + E(\varepsilon_{yt}^2)]$
+- Expand the expectation: $*=-b_{21}[E(b_{12}z_t\varepsilon_{yt})+ E(\gamma_{11}y_{t-1}\varepsilon_{yt}) + E(\gamma_{12}z_{t-1}\varepsilon_{yt}) + E(\varepsilon_{yt}^2)]$
 
-- What remains after exploiting independence is $-b_{21} E(\varepsilon_{yt}^2) = -b_{21}\sigma_y^2 \neq 0$ QED. 
+- What remains after exploiting independence is $*=-b_{21} E(\varepsilon_{yt}^2) = -b_{21}\sigma_y^2 \neq 0$ QED. 
 
+The implications on estimation are that estimates will be inefficient and baised.
+## 2
 
 # Empirical exercises
 Do exercises 10a-10g in the textbook (p.340)
@@ -76,19 +78,52 @@ df <- df %>% mutate(dlip = log(indprod)-log(lag(indprod)),
                     dur = urate - lag(urate),
                     s = r10 - tbill)
 ```
-Do we need to check for stationarity here?
+Do we need to check for stationarity here? Might be enough to assume it.
 ```{r}
 # Eventually, stationarity checks.
 ```
 The lag length is already determined to be 3. 
 
 
-```{r}
+```{r VAR}
 # Estimate the 3 VAR, with the ordering dlip, dur, s
-# Page 310 and forward looks useful
+# Page 310 and forward looks useful. Also around 292
+# Do we first estimate the standard VARs and then go to identify the parameters in the structural VAR?
 dlip_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
                  lag(dur) + lag(dur,2) + lag(dur,3) + 
                  lag(s) + lag(s,2) + lag(s,3), data = df)
+dur_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+                 lag(dur) + lag(dur,2) + lag(dur,3) + 
+                 lag(s) + lag(s,2) + lag(s,3), data = df)
+s_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+                 lag(dur) + lag(dur,2) + lag(dur,3) + 
+                 lag(s) + lag(s,2) + lag(s,3), data = df)
+```
+
+
+```{r altVAR}
+# This is an alternative to VAR above. 
+# The idea is to estimate the system akin to 5.17 & 5.18 in the book
+# with the imposed restrictions.
+s_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+                 lag(dur) + lag(dur,2) + lag(dur,3) + 
+                 lag(s) + lag(s,2) + lag(s,3), 
+            data = df)
+
+# Not sure why it gives NA as estimate
+dur_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+                 lag(dur) + lag(dur,2) + lag(dur,3) + 
+                 lag(s) + lag(s,2) + lag(s,3) + 
+                s_fit$fitted.values, 
+              data = df[5:235,])
+
+dlip_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+                 lag(dur) + lag(dur,2) + lag(dur,3) + 
+                 lag(s) + lag(s,2) + lag(s,3) + 
+                 s_fit$fitted.values + dur_fit$fitted.values,
+               data = df)
+
+
 
 ```
 

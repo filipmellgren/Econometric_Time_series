@@ -9,6 +9,8 @@ output:
     toc: true
 ---
 
+#This is a comment by Ismael
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
 ```
@@ -92,10 +94,10 @@ The lag length is already determined to be 3.
 dlip_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
                  lag(dur) + lag(dur,2) + lag(dur,3) + 
                  lag(s) + lag(s,2) + lag(s,3), data = df)
-dur_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+dur_fit <- lm(dur ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
                  lag(dur) + lag(dur,2) + lag(dur,3) + 
                  lag(s) + lag(s,2) + lag(s,3), data = df)
-s_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+s_fit <- lm(s ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
                  lag(dur) + lag(dur,2) + lag(dur,3) + 
                  lag(s) + lag(s,2) + lag(s,3), data = df)
 ```
@@ -105,24 +107,23 @@ s_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) +
 # This is an alternative to VAR above. 
 # The idea is to estimate the system akin to 5.17 & 5.18 in the book
 # with the imposed restrictions.
-s_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
-                 lag(dur) + lag(dur,2) + lag(dur,3) + 
-                 lag(s) + lag(s,2) + lag(s,3), 
-            data = df)
-
-# Not sure why it gives NA as estimate
-dur_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
-                 lag(dur) + lag(dur,2) + lag(dur,3) + 
-                 lag(s) + lag(s,2) + lag(s,3) + 
-                s_fit$fitted.values, 
-              data = df[5:235,])
 
 dlip_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
                  lag(dur) + lag(dur,2) + lag(dur,3) + 
-                 lag(s) + lag(s,2) + lag(s,3) + 
-                 s_fit$fitted.values + dur_fit$fitted.values,
+                 lag(s) + lag(s,2) + lag(s,3),
                data = df)
 
+dur_fit <- lm(dur ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+                 lag(dur) + lag(dur,2) + lag(dur,3) + 
+                 lag(s) + lag(s,2) + lag(s,3) + 
+                dlip, 
+              data = df[5:235,])
+
+s_fit <- lm(s ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
+                 lag(dur) + lag(dur,2) + lag(dur,3) + 
+                 lag(s) + lag(s,2) + lag(s,3) +
+              dlip + dur, 
+            data = df)
 
 
 ```

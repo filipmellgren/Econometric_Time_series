@@ -46,7 +46,7 @@ The implications on estimation are that estimates will be inefficient and baised
 Firstly, we express (1) in the following matrix form:
 
 $$BX_t= \Gamma_0 + \Gamma_1X_{t-1} + \varepsilon_t$$
-Where \[
+Where $$\[
    B=
   \left[ {\begin{array}{cc}
    1 & b_{12} \\
@@ -81,7 +81,7 @@ Where \[
    b_{20} \\
   \end{array} } \right]
 \]
-
+$$
 ## 2
 
 # Empirical exercises

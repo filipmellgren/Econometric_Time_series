@@ -118,11 +118,10 @@ reported since the sample is extended. However, the main conclusions should be t
 - Remark 3: You find the appropriate specifications for the variables st
 , $\Delta$lip, and $\Delta$ur described in the text to exercise 9 (p.339).
 
-```{r}
+```{r, include = FALSE}
 # Load necessary packages
 library(rio)
 library(tidyverse)
-
 library(vars)
 library(broom)
 library(stargazer)
@@ -136,7 +135,7 @@ Estimate the three-VAR beginning in 1961Q1 and use the ordering such that $\Delt
 df <- as_tibble(import("A3_2019_data.dta"))
 ```
 
-We begin by defining the variables we are going to include in our analysis.
+We begin by defining the variables we are going to include in our analysis. We create $dlip = log(indprod_t) - log(indprod_{t-1}), dur = urate_t - urate_{t-1}$ and $s = r10 - tbill$.
 ```{r}
 # Make the date variable a number
 df <- df %>% mutate(year = as.numeric(str_sub(DATE, start = 1, end = 4)),
@@ -148,20 +147,16 @@ df <- df %>% mutate(dlip = log(indprod)-log(lag(indprod)),
                     dur = urate - lag(urate),
                     s = r10 - tbill)
 ```
-Do we need to check for stationarity here? Might be enough to assume it.
+In the context of chapter 5, we assume that staionarity holds. Additionally, it is provided for us that the appropriate lag length is 3. The result of the var estimation is as follows:
 ```{r}
 # Eventually, stationarity checks.
 ```
-The lag length is already determined to be 3. 
-
 
 ```{r VAR}
 # Estimate the 3 VAR, with the ordering dlip, dur, s
 # Page 310 and forward looks useful. Also around 292
-# Do we first estimate the standard VARs and then go to identify the parameters in the structural VAR?
-tmp <- df %>% dplyr::select(dlip, dur, s) %>% dplyr::filter(row_number() > 1)
-tmp <- as.matrix(tmp)
-var <- VAR(tmp, p = 3, type = "none")
+
+var <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 3, type = "none")
 summary(var)
 ```
 
@@ -171,14 +166,15 @@ If you perform a test to determine whether $s_t$ Granger causes $\Delta lip_t$, 
 # might use grangertest()
 #grangertest(x = df$dlip, y = df$s, order = 3) # Not a similar value
 gc_sdlip <- grangertest(x = df$s, y = df$dlip, order = 3) # Somewhat similar
-stargazer(gc_sdlip, header = FALSE, omit = "school", type = "latex", float=FALSE)
+stargazer(gc_sdlip, header = FALSE, summary.stat = c("n", "mean", "sd"), type = "latex", float=FALSE, iqr = FALSE, median = FALSE)
 ```
+The p-value is borderline significant. Assuming the null that no lag of $s$ predicts $dlip$ does not hold, then the meaning is that there is a lag of $s$ that does predict $dlip$. Hence, $s$ granger causes $dlip$. However, it is not clear cut given the p-value.
 
 ### 10 b:
 Verify that $s_t$ Granger causes $\Delta unemp_t$. You should find that the F statistic is 5.93 with a prob value of less than 0.001.
 ```{r results = "asis"}
 gc_sdur <- grangertest(x = df$s, y = df$dur, order = 3)
-stargazer(gc_sdur, header = FALSE, omit = "school", type = "latex", float=FALSE)
+stargazer(gc_sdur, header = FALSE, summary.stat = c("n", "mean", "sd"),type = "latex", float=FALSE)
 ```
 
 ### 10 c:
@@ -190,16 +186,18 @@ Now estimate the model using the levels of $lip_t$ and $ur_t$. Do you now find a
 
 ```{r}
 df <- df %>% mutate(lip = log(indprod))
-tmp <- df %>% dplyr::select(lip, urate, s) %>% dplyr::filter(row_number() > 1)
-tmp <- as.matrix(tmp)
-var_e <- VAR(tmp, p = 5, type = "none")
+# Select the variables in the correct order (for the cholesky decomp to be 
+# right). Filter away first row to not have any NA (created when differencing)
+ 
+var_e <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 5, type = "none")
 summary(var_e)
 ```
+We do not think a lag length of 5 is appropriate as the AIC suggests a lag length of 1 is sufficient. 
 
 ### 10 f:
 Obtain the impulse response function from the model using $\Delta lip_t, \Delta ur_t$ and $s_t$. Show that a positive shock to the industrial production induces a decline in the unemployment rate that lasts six quarters. Then, $\Delta ur_t$ overshoots its long run level before returning to zero.
 
-```{r}
+```{r fig.height = 3, fig.width = 5}
 irf <- irf(var, ortho = TRUE, n.ahead = 10)
 plot(irf)
 ```
@@ -209,12 +207,15 @@ plot(irf)
 Reverse the ordering and explain why the results depend on whether or not $\Delta lip_t$ proceeds $\Delta ur_t$
 
 ```{r}
-tmp <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1)
-tmp <- as.matrix(tmp)
-var_g <- VAR(tmp, p = 3, type = "none")
-#summary(var_g)
+# Select the variables in the correct order (for the cholesky decomp to be 
+# right). Filter away first row to not have any NA (created when differencing)
+ 
+var_g <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 3, type = "none")
 irf_g <- irf(var_g, ortho = TRUE, n.ahead = 10)
+```
+
+```{r, fig.height = 3, fig.width = 5}
 plot(irf_g)
 ```
 
-
+If $\Delta lip_t$ proceeds $\Delta ur_t$, then a contemporary effect on $\Delta lip_t$ affects $\Delta ur_t$, but not vice versa. On the other hand, if the reverse holds, then shocks to $\Delta lip_t$ will be delayed until next period before any noticeable change occurs to $\Delta ur_t$.

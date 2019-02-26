@@ -57,10 +57,10 @@ reported since the sample is extended. However, the main conclusions should be t
 ```{r}
 # Load necessary packages
 library(rio)
-library(tidyverse)
 library(vars)
 library(broom)
 library(stargazer)
+library(tidyverse)
 ```
 
 
@@ -90,46 +90,25 @@ Do we need to check for stationarity here? Might be enough to assume it.
 The lag length is already determined to be 3. 
 
 
+
+
 ```{r VAR}
 # Estimate the 3 VAR, with the ordering dlip, dur, s
 # Page 310 and forward looks useful. Also around 292
-# Do we first estimate the standard VARs and then go to identify the parameters in the structural VAR?
-dlip_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
-                 lag(dur) + lag(dur,2) + lag(dur,3) + 
-                 lag(s) + lag(s,2) + lag(s,3), data = df)
-dur_fit <- lm(dur ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
-                 lag(dur) + lag(dur,2) + lag(dur,3) + 
-                 lag(s) + lag(s,2) + lag(s,3), data = df)
-s_fit <- lm(s ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
-                 lag(dur) + lag(dur,2) + lag(dur,3) + 
-                 lag(s) + lag(s,2) + lag(s,3), data = df)
-```
 
+# Select data used for input. Is the ordering here important? Possibly when we use irf with its cholesky decomposition later.
+tmp <- df %>% dplyr::select(dlip, dur, s) %>% dplyr::filter(row_number() > 1)
+tmp <- as.matrix(tmp)
+# Var gives estimates of 3 OLS regressions. All the containing 3 lags from each variable.
+var <- VAR(tmp, p = 3, type = "none")
 
-```{r altVAR}
-# This is an alternative to VAR above. 
-# The idea is to estimate the system akin to 5.17 & 5.18 in the book
-# with the imposed restrictions.
-
-dlip_fit <- lm(dlip ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
-                 lag(dur) + lag(dur,2) + lag(dur,3) + 
-                 lag(s) + lag(s,2) + lag(s,3),
-               data = df)
-
-dur_fit <- lm(dur ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
-                 lag(dur) + lag(dur,2) + lag(dur,3) + 
-                 lag(s) + lag(s,2) + lag(s,3) + 
-                dlip, 
-              data = df[5:235,])
-
-s_fit <- lm(s ~ lag(dlip) + lag(dlip,2) + lag(dlip,3) + 
-                 lag(dur) + lag(dur,2) + lag(dur,3) + 
-                 lag(s) + lag(s,2) + lag(s,3) +
-              dlip + dur, 
-            data = df)
-
+# Necessary at this point?
+irf(var, ortho = TRUE, n.ahead = 10)
 
 ```
+
+
+
 
 ### 10 a:
 If you perform a test to determine whether $s_t$ Granger causes $\Delta lip_t$, you should find that the F-statistic is 2.44 with a prob-value of 0.065. How do you interpret this result?

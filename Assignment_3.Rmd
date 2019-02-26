@@ -2,11 +2,12 @@
 title: "Assignment 3"
 author: "Filip Mellgren"
 date: '2019-02-23'
+output: 
   pdf_document:
     df_print: tibble
-output: 
     highlight: tango
     toc: true
+---
 ---
 
 

@@ -2,12 +2,15 @@
 title: "Assignment 3"
 author: "Filip Mellgren"
 date: '2019-02-23'
-output: 
   pdf_document:
     df_print: tibble
+output: 
     highlight: tango
     toc: true
 ---
+
+
+Hello,this is a comment from Ismael
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
@@ -16,7 +19,7 @@ knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
 # Theoretical exercises
 ## 1
 ### a: 
-
+test
 Show that $* = Cov(z_t, \varepsilon_{yt}) \neq 0$.
 
 - Recall the formula for covariance: $Cov(z_t, \varepsilon_{yt}) = E(z_t\varepsilon_{yt})-E(z_t)E(\varepsilon_{yt})$. Because $\varepsilon_{yt} \sim WN(0,\sigma_y^2)$, we obtain: $* = E(z_t\varepsilon_{yt})$. 
@@ -39,10 +42,11 @@ Show that $* = Cov(z_t, \varepsilon_{yt}) \neq 0$.
 The implications on estimation are that estimates will be inefficient and baised.
 
 ###b
+
 Firstly, we express (1) in the following matrix form:
 
 $$BX_t= \Gamma_0 + \Gamma_1X_{t-1} + \varepsilon_t$$
-Where $$\[
+Where \[
    B=
   \left[ {\begin{array}{cc}
    1 & b_{12} \\
@@ -55,7 +59,7 @@ Where $$\[
    y_t  \\
    z_t \\
   \end{array} } \right]
-\] 
+\]
 \[
    \Gamma_0=
   \left[ {\begin{array}{cc}
@@ -77,12 +81,7 @@ Where $$\[
    b_{20} \\
   \end{array} } \right]
 \]
-<<<<<<< HEAD
-$$
-=======
 
-
->>>>>>> cc1c2bf45d266441b0e0c5fce6b85082d31e571b
 ## 2
 
 # Empirical exercises

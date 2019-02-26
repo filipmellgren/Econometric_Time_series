@@ -83,6 +83,27 @@ Where \[
   \end{array} } \right]
 \]
 
+
+### d
+```{r}
+# calculate inverse
+b21 <- 0
+b12 <- -0.8
+B <- cbind(c(1, b21), c(b12, 1))
+B_inv <- solve(B)
+A <- cbind(c(.6, .1), c(.2, .8))
+
+p1 <- B_inv %*% c(1,0)
+p2 <- A%*%p1
+p3 <- A%*%p2
+p4 <- A%*%p3
+series <- t(cbind(p1, p2, p3, p4))
+plot(series[,1])
+plot(series[,2])
+
+```
+
+
 ## 2
 
 # Empirical exercises

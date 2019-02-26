@@ -139,7 +139,7 @@ The lag length is already determined to be 3.
 tmp <- df %>% dplyr::select(dlip, dur, s) %>% dplyr::filter(row_number() > 1)
 tmp <- as.matrix(tmp)
 var <- VAR(tmp, p = 3, type = "none")
-irf(var, ortho = TRUE, n.ahead = 10)
+summary(var)
 ```
 
 ### 10 a:
@@ -154,8 +154,7 @@ stargazer(gc_sdlip, header = FALSE, omit = "school", type = "latex", float=FALSE
 ### 10 b:
 Verify that $s_t$ Granger causes $\Delta unemp_t$. You should find that the F statistic is 5.93 with a prob value of less than 0.001.
 ```{r results = "asis"}
-# might use grangertest()
-gc_sdur <- grangertest(x = df$s, y = df$dur, order = 3) # not the same
+gc_sdur <- grangertest(x = df$s, y = df$dur, order = 3)
 stargazer(gc_sdur, header = FALSE, omit = "school", type = "latex", float=FALSE)
 ```
 
@@ -168,13 +167,18 @@ Now estimate the model using the levels of $lip_t$ and $ur_t$. Do you now find a
 
 ```{r}
 df <- df %>% mutate(lip = log(indprod))
+tmp <- df %>% dplyr::select(lip, urate, s) %>% dplyr::filter(row_number() > 1)
+tmp <- as.matrix(tmp)
+var_e <- VAR(tmp, p = 5, type = "none")
+summary(var_e)
 ```
 
 ### 10 f:
 Obtain the impulse response function from the model using $\Delta lip_t, \Delta ur_t$ and $s_t$. Show that a positive shock to the industrial production induces a decline in the unemployment rate that lasts six quarters. Then, $\Delta ur_t$ overshoots its long run level before returning to zero.
 
 ```{r}
-# https://www.rdocumentation.org/packages/vars/versions/1.5-3/topics/irf
+irf <- irf(var, ortho = TRUE, n.ahead = 10)
+plot(irf)
 ```
 
 
@@ -182,7 +186,12 @@ Obtain the impulse response function from the model using $\Delta lip_t, \Delta 
 Reverse the ordering and explain why the results depend on whether or not $\Delta lip_t$ proceeds $\Delta ur_t$
 
 ```{r}
-
+tmp <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1)
+tmp <- as.matrix(tmp)
+var_g <- VAR(tmp, p = 3, type = "none")
+#summary(var_g)
+irf_g <- irf(var_g, ortho = TRUE, n.ahead = 10)
+plot(irf_g)
 ```
 
 

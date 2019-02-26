@@ -9,7 +9,7 @@ output:
     toc: true
 ---
 
-hejhej
+
 Hello,this is a comment from Ismael
 
 ```{r setup, include=FALSE}
@@ -40,6 +40,35 @@ Show that $* = Cov(z_t, \varepsilon_{yt}) \neq 0$.
 - What remains after exploiting independence is $*=-b_{21} E(\varepsilon_{yt}^2) = -b_{21}\sigma_y^2 \neq 0$ QED. 
 
 The implications on estimation are that estimates will be inefficient and baised.
+
+###b
+
+Firstly, we express (1) in the following matrix form:
+
+$$BX_t= \Gamma_0 + \Gamma_1X_{t-1} + \varepsilon_t$$
+Where \[
+   B=
+  \left[ {\begin{array}{cc}
+   1 & b_{12} \\
+   b_{21} & 1 \\
+  \end{array} } \right]
+\] , 
+\[
+   X_t=
+  \left[ {\begin{array}{cc}
+   y_t  \\
+   z_t \\
+  \end{array} } \right]
+\] 
+\[
+   X_t=
+  \left[ {\begin{array}{cc}
+   y_t  \\
+   z_t \\
+  \end{array} } \right]
+\]
+
+
 ## 2
 
 # Empirical exercises

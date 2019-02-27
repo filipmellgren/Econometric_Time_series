@@ -82,6 +82,14 @@ Where \[
   \end{array} } \right]
 \]
 
+```{r}
+#See steps in wikipedia, use book's notation: https://en.wikipedia.org/wiki/Vector_autoregression#Structural_vs._reduced_form
+```
+###c
+
+
+###
+
 ## 2
 
 # Empirical exercises

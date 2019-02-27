@@ -75,6 +75,9 @@ Where \[
    \gamma_{21} & \gamma_{22} \\
   \end{array} } \right]
 \]
+
+
+
 \[
    \Gamma_0=
   \left[ {\begin{array}{cc}
@@ -85,7 +88,8 @@ Where \[
 
 
 ### d
-```{r}
+```{r fig.height = 4, fig.width = 4}
+#d a i
 # calculate inverse
 b21 <- 0
 b12 <- -0.8
@@ -98,11 +102,35 @@ p2 <- A%*%p1
 p3 <- A%*%p2
 p4 <- A%*%p3
 series <- t(cbind(p1, p2, p3, p4))
-plot(series[,1])
-plot(series[,2])
+plot(series[,1], xlab = "Iteration", ylab = "Impact")
+plot(series[,2], xlab = "Iteration", ylab = "Impact")
 
 ```
+```{r fig.height = 4, fig.width = 4}
+#d a ii
+# calculate inverse
+b21 <- 0
+b12 <- -0.8
+B <- cbind(c(1, b21), c(b12, 1))
+B_inv <- solve(B)
+A <- cbind(c(.6, .1), c(.2, .8))
 
+p1 <- B_inv %*% c(0,1)
+p2 <- A%*%p1
+p3 <- A%*%p2
+p4 <- A%*%p3
+series <- t(cbind(p1, p2, p3, p4))
+plot(series[,1], xlab = "Iteration", ylab = "Impact")
+plot(series[,2], xlab = "Iteration", ylab = "Impact")
+
+```
+There's a unit root if solutions of the system $det(I - zA_1) = 0$ lie on the unit circle. Take $z = 1$, then 
+$$I - A_1 =
+\left[ {\begin{array}{cc} 
+1- a_{11} & -a_{12} \\ 
+-a_{21} & 1-a_{22} \\ 
+\end{array} } \right]$$
+ and the determinant is: 
 
 ## 2
 

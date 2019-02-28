@@ -1,17 +1,15 @@
 ---
 title: "Assignment 3"
-author: "Filip Mellgren"
-date: '2019-02-23'
+author: "Filip Mellgren, Athina Swahn, Ismael Moreno"
+date: '2019-02-29'
 output: 
   pdf_document:
     df_print: tibble
     highlight: tango
-    toc: true
 ---
 ---
 
 
-Hello,this is a comment from Ismael. Once again.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
@@ -167,7 +165,6 @@ Where the extremes' expressions are equivalent to:
 Solving for $b$ in $-0.5b^2+3b-0.5=0$ we get the following two sets of solutions:
 
 $$\theta_{i}=(b_1, \sigma_y^2, \sigma_z^2, \gamma_{11}, \gamma_{12}, \gamma_{21}, \gamma_{22})_{i}=(0.172, 0.887, 1.858, 0.583, 0.063, 0.003, -0.766)$$
-
 $$\theta_{ii}=(b_1, \sigma_y^2, \sigma_z^2, \gamma_{11}, \gamma_{12}, \gamma_{21}, \gamma_{22})_{ii}=(5.828, 63.112, 30.142, 0.0172, -4.463, 3.397, 0.366)$$
 =======
 
@@ -329,11 +326,13 @@ df <- df %>% mutate(lip = log(indprod))
  
 var_e <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 5, type = "none")
 summary(var_e)
+
 ```
 We do not think a lag length of 5 is appropriate as the AIC suggests a lag length of 1 is sufficient. Next, we check for serial correlation:
 
 ```{r}
 serial.test(var_e, lags.pt = 8, type = "PT.adjusted")
+
 ```
 We find that there is serial correlation in the specified model using the adjusted portmanteau test.
 
@@ -343,7 +342,9 @@ Obtain the impulse response function from the model using $\Delta lip_t, \Delta 
 
 ```{r fig.height = 3, fig.width = 5}
 irf <- irf(var, ortho = TRUE, n.ahead = 10)
+
 plot(irf)
+
 ```
 
 
@@ -356,10 +357,13 @@ Reverse the ordering and explain why the results depend on whether or not $\Delt
  
 var_g <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 3, type = "none")
 irf_g <- irf(var_g, ortho = TRUE, n.ahead = 10)
+
 ```
 
 ```{r, fig.height = 3, fig.width = 5}
+
 plot(irf_g)
+
 ```
 
 If $\Delta lip_t$ proceeds $\Delta ur_t$, then a contemporary effect on $\Delta lip_t$ affects $\Delta ur_t$, but not vice versa. On the other hand, if the reverse holds, then shocks to $\Delta lip_t$ will be delayed until next period before any noticeable change occurs to $\Delta ur_t$.

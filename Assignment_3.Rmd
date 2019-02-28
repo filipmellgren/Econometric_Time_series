@@ -186,9 +186,7 @@ df <- df %>% mutate(dlip = log(indprod)-log(lag(indprod)),
                     s = r10 - tbill)
 ```
 In the context of chapter 5, we assume that staionarity holds. Additionally, it is provided for us that the appropriate lag length is 3. The result of the var estimation is as follows:
-```{r}
-# Eventually, stationarity checks.
-```
+
 
 ```{r VAR}
 # Estimate the 3 VAR, with the ordering dlip, dur, s
@@ -197,6 +195,13 @@ In the context of chapter 5, we assume that staionarity holds. Additionally, it 
 var <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 3, type = "none")
 summary(var)
 ```
+
+We also check for serial correlation using the adjusted Portmanteau test with 8 lags:
+```{r}
+serial.test(var, lags.pt = 8, type = "PT.adjusted")
+```
+The null of no serial correlation is rejected. Hence, there is still serial correlation in the data. Anyway, we specified the model with the number of lags given in the book, so we proceed without further changes.
+
 
 ### 10 a:
 If you perform a test to determine whether $s_t$ Granger causes $\Delta lip_t$, you should find that the F-statistic is 2.44 with a prob-value of 0.065. How do you interpret this result?
@@ -218,6 +223,7 @@ stargazer(gc_sdur, header = FALSE, summary.stat = c("n", "mean", "sd"),type = "l
 ### 10 c:
 It turns out that the correlation coefficient between $e_{1t}$ and $e_{2t}$ is -0.72. The correlation between $e_{1t}$ and $e_{3t}$ is -0.11 and between $e_{2t}$ and $e_{3t}$ is 0.10. Explain why the ordering of a Choleski composition is likely to be important for obtaining the impulse responses.
 
+EXPLAIN THE ORDERING
 
 ### 10 e:
 Now estimate the model using the levels of $lip_t$ and $ur_t$. Do you now find a lag length of 5 appropriate?
@@ -230,7 +236,13 @@ df <- df %>% mutate(lip = log(indprod))
 var_e <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 5, type = "none")
 summary(var_e)
 ```
-We do not think a lag length of 5 is appropriate as the AIC suggests a lag length of 1 is sufficient. 
+We do not think a lag length of 5 is appropriate as the AIC suggests a lag length of 1 is sufficient. Next, we check for serial correlation:
+
+```{r}
+serial.test(var_e, lags.pt = 8, type = "PT.adjusted")
+```
+We find that there is serial correlation in the specified model using the adjusted portmanteau test.
+
 
 ### 10 f:
 Obtain the impulse response function from the model using $\Delta lip_t, \Delta ur_t$ and $s_t$. Show that a positive shock to the industrial production induces a decline in the unemployment rate that lasts six quarters. Then, $\Delta ur_t$ overshoots its long run level before returning to zero.

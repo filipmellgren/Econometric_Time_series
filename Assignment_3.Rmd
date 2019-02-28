@@ -133,15 +133,15 @@ plot(series[,1], xlab = "Iteration", ylab = "Impact")
 plot(series[,2], xlab = "Iteration", ylab = "Impact")
 
 ```
-There's a unit root if solutions of the system $det(I - zA_1) = 0$ lie on the unit circle. Take $z = 1$, then 
+There's a unit root if solutions of the system $det(I - zA_1) = 0$ lie on the unit circle. A unit root means $z = (1,1)$, then 
 $$I - A_1 =
 \left[ {\begin{array}{cc} 
 1- a_{11} & -a_{12} \\ 
 -a_{21} & 1-a_{22} \\ 
 \end{array} } \right]$$
 
-For simplicity, we assume $a_{11} = a_{12} = 0$ which makes the determinant: 
-$$ det(I-A_1) = 1-a_{22} = 0 \implies a_{22} = 1$$, with $a_{21}$ being any number.
+For simplicity, take $A_1 = I$, then the determinant: 
+$$ det(I-A_1) = 0$$.
 
 ```{r}
 # 1 d iii
@@ -149,7 +149,7 @@ b21 <- 0
 b12 <- -0.8
 B <- cbind(c(1, b21), c(b12, 1))
 B_inv <- solve(B)
-A <- cbind(c(0, 2), c(0, 1))
+A <- cbind(c(1, 0), c(0, 1))
 
 p1 <- B_inv %*% c(0,1)
 p2 <- A%*%p1
@@ -160,7 +160,7 @@ plot(series[,1], xlab = "Iteration", ylab = "Impact")
 plot(series[,2], xlab = "Iteration", ylab = "Impact")
 
 ```
-The shock will never fade as the impact doesn't seem to return to zero and remains constant.
+The shock will never fade as the impacts seem to not return to zero and remain constant.
 ## 2
 
 # Empirical exercises

@@ -47,6 +47,7 @@ The implications on estimation are that estimates will be inefficient and baised
 Firstly, we express (1) in the following matrix form:
 
 $$BX_t=\Gamma_1X_{t-1} + \varepsilon_t$$
+
 Where \[
    B=
   \left[ {\begin{array}{cc}
@@ -76,13 +77,13 @@ Where \[
   \end{array} } \right]
 \]
 
-Multiplying both sides by the inverse og $B$ makes us obtain the VAR model in standard form: 
+Multiplying both sides by the inverse of $B$ makes us obtain the VAR model in standard form: 
 $$x_t = A_1x_{t-1}+e_t$$
-where $A_1 =B^{-1}\Gamma_1$, $e_t = B^{-1}\varepsilon_t$
+where $A_1 =B^{-1}\Gamma_1$ and $e_t = B^{-1}\varepsilon_t$
 
 
-###c
-####(i)
+###c(i)
+
 
 In this particular case, \[
    B=
@@ -137,7 +138,7 @@ From where we can get the following matrix of covariances expressed as variances
   -0.1 & -0.8 \\
   \end{array} } \right]\]
 
-####(ii)
+###c(ii)
 
 First, we define \[B=
 \left[ {\begin{array}{cc}
@@ -153,20 +154,19 @@ $$B\Sigma_eB=BB^{-1}\Sigma_\varepsilon (B^{-1})^TB=\Sigma_\varepsilon$$
 Where the extremes' expressions are equivalent to:
 
 \[ 
-    \left[ {\begin{array}{cc}
+  \left[ {\begin{array}{cc}
    2b^2-b+1 & -0.5b^2+3b-0.5 \\
   -0.5b^2+3b-0.5  & b^2-b+2 \\
   \end{array} } \right]=
-
       \left[ {\begin{array}{cc}
    \sigma_y^2 & 0 \\
    0 & \sigma_z^2 \\
-  \end{array} } \right]=
+  \end{array} } \right]
   \]
 
 Solving for $b$ in $-0.5b^2+3b-0.5=0$ we get the following two sets of solutions:
 
-$$\theta_i=(b_1, \sigma_y^2, \sigma_z^2, \gamma_{11}, \gamma_{12}, \gamma_{21}, \gamma_{22})_i=(0.172, 0.887, 1.858, 0.583, 0.063, 0.003, -0.766)$$
+$$\theta_{i}=(b_1, \sigma_y^2, \sigma_z^2, \gamma_{11}, \gamma_{12}, \gamma_{21}, \gamma_{22})_{i}=(0.172, 0.887, 1.858, 0.583, 0.063, 0.003, -0.766)$$
 
 $$\theta_{ii}=(b_1, \sigma_y^2, \sigma_z^2, \gamma_{11}, \gamma_{12}, \gamma_{21}, \gamma_{22})_{ii}=(5.828, 63.112, 30.142, 0.0172, -4.463, 3.397, 0.366)$$
 =======

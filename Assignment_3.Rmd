@@ -1,17 +1,15 @@
 ---
 title: "Assignment 3"
-author: "Filip Mellgren"
-date: '2019-02-23'
+author: "Filip Mellgren, Athina Swahn, Ismael Moreno"
+date: '2019-02-29'
 output: 
   pdf_document:
     df_print: tibble
     highlight: tango
-    toc: true
 ---
 ---
 
 
-Hello,this is a comment from Ismael
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
@@ -46,7 +44,8 @@ The implications on estimation are that estimates will be inefficient and baised
 
 Firstly, we express (1) in the following matrix form:
 
-$$BX_t= \Gamma_0 + \Gamma_1X_{t-1} + \varepsilon_t$$
+$$BX_t=\Gamma_1X_{t-1} + \varepsilon_t$$
+
 Where \[
    B=
   \left[ {\begin{array}{cc}
@@ -62,41 +61,115 @@ Where \[
   \end{array} } \right]
 \]
 \[
-   \Gamma_0=
-  \left[ {\begin{array}{cc}
-   b_{10}  \\
-   b_{20} \\
-  \end{array} } \right]
-\]
-\[
    \Gamma_1=
   \left[ {\begin{array}{cc}
    \gamma_{11} & \gamma_{12} \\
    \gamma_{21} & \gamma_{22} \\
   \end{array} } \right]
 \]
-
-
-
 \[
-   \Gamma_0=
+   \varepsilon_t=
   \left[ {\begin{array}{cc}
-   b_{10}  \\
-   b_{20} \\
+   \varepsilon_{y,t}  \\
+   \varepsilon_{z,t} \\
   \end{array} } \right]
 \]
 
-<<<<<<< HEAD
-```{r}
-#See steps in wikipedia, use book's notation: https://en.wikipedia.org/wiki/Vector_autoregression#Structural_vs._reduced_form
-```
-###c
+Multiplying both sides by the inverse of $B$ makes us obtain the VAR model in standard form: 
+$$x_t = A_1x_{t-1}+e_t$$
+where $A_1 =B^{-1}\Gamma_1$ and $e_t = B^{-1}\varepsilon_t$
 
 
-###
-=======
+###c(i)
+
+
+In this particular case, \[
+   B=
+  \left[ {\begin{array}{cc}
+   1 & b_{12} \\
+   0 & 1 \\
+  \end{array} } \right]
+\].
+We also know that $BA_1 =\Gamma_1$, therefore we can express $\Gamma_1$ as:
+
+\[\Gamma_1=
+  \left[ {\begin{array}{cc}
+   \gamma_{11} & \gamma_{12} \\
+   \gamma_{21} & \gamma_{22} \\
+  \end{array} } \right]=
+    \left[ {\begin{array}{cc}
+   0.6-0.1b_{12} & 0.2-0.8b_{12} \\
+   -0.1 & -0.8 \\
+  \end{array} } \right]
+  \]
+  
+  Also, we know $e_t=B\varepsilon_t$, then:
+  
+  \[e_t=
+    \left[ {\begin{array}{cc}
+   e_{1,t}  \\
+   e_{2,t} \\
+  \end{array} } \right]=
+  \left[ {\begin{array}{cc}
+   \varepsilon_{y,t}-\varepsilon_{z,t}b_{12} \\
+   -\varepsilon_{z,t} \\
+  \end{array} } \right]
+  \]
+  
+From where we can get the following matrix of covariances expressed as variances of the structural errors and parameter $b_{12}$:
+
+\[ \Sigma_e=
+    \left[ {\begin{array}{cc}
+   \sigma_y^2+(b_{12}^2+b_{12})\sigma_z^2 & b_{12}\sigma_z^2 \\
+   b_{12}\sigma_z^2 & \sigma_z^2 \\
+  \end{array} } \right]=
+  \left[ {\begin{array}{cc}
+   1 & 0.5 \\
+   0.5 & 2 \\
+  \end{array} } \right]
+\]
+  
+  With some algebra we find that $b_{12}=0.25$, $\sigma_y^2=3/8$, $\sigma_z^2=2$ and
+  \[\Gamma_1=
+  \left[ {\begin{array}{cc}
+  0.575 & 0 \\
+  -0.1 & -0.8 \\
+  \end{array} } \right]\]
+
+###c(ii)
+
+First, we define \[B=
+\left[ {\begin{array}{cc}
+1 & b \\
+b & 1 \\
+\end{array} } \right]\], where $b=b_{12}=b_{21}$. Additionally, as explained in p.317 of the book, the covariance matrix of the reduce form can be expressed as:
+
+$$\Sigma_e=B^{-1}\Sigma_\varepsilon (B^{-1})^T$$
+
+ Given $B$ is a symetric matrix, the following expression holds:
+
+$$B\Sigma_eB=BB^{-1}\Sigma_\varepsilon (B^{-1})^TB=\Sigma_\varepsilon$$
+Where the extremes' expressions are equivalent to:
+
+\[ 
+  \left[ {\begin{array}{cc}
+   2b^2-b+1 & -0.5b^2+3b-0.5 \\
+  -0.5b^2+3b-0.5  & b^2-b+2 \\
+  \end{array} } \right]=
+      \left[ {\begin{array}{cc}
+   \sigma_y^2 & 0 \\
+   0 & \sigma_z^2 \\
+  \end{array} } \right]
+  \]
+
+Solving for $b$ in $-0.5b^2+3b-0.5=0$ we get the following two sets of solutions:
+
+$$\theta_{i}=(b_1, \sigma_y^2, \sigma_z^2, \gamma_{11}, \gamma_{12}, \gamma_{21}, \gamma_{22})_{i}=(0.172, 0.887, 1.858, 0.583, 0.063, 0.003, -0.766)$$
+$$\theta_{ii}=(b_1, \sigma_y^2, \sigma_z^2, \gamma_{11}, \gamma_{12}, \gamma_{21}, \gamma_{22})_{ii}=(5.828, 63.112, 30.142, 0.0172, -4.463, 3.397, 0.366)$$
+
 
 ### d
+
 ```{r fig.height = 4, fig.width = 4}
 #d a i
 # calculate inverse
@@ -133,15 +206,34 @@ plot(series[,1], xlab = "Iteration", ylab = "Impact")
 plot(series[,2], xlab = "Iteration", ylab = "Impact")
 
 ```
-There's a unit root if solutions of the system $det(I - zA_1) = 0$ lie on the unit circle. Take $z = 1$, then 
-$$I - A_1 =
+There's a unit root if solutions of the system $det(I - zA_1) = 0$ lie on the unit circle. A unit root means $z = (1,1)$, then 
+\[I - A_1 =
 \left[ {\begin{array}{cc} 
 1- a_{11} & -a_{12} \\ 
 -a_{21} & 1-a_{22} \\ 
-\end{array} } \right]$$
- and the determinant is: 
->>>>>>> 3e43b9467c5ee7f3861e461eb48b9797de065d9b
+\end{array} } \right]\]
 
+For simplicity, take $A_1 = I$, then the determinant: 
+$$ det(I-A_1) = 0$$.
+
+```{r}
+# 1 d iii
+b21 <- 0
+b12 <- -0.8
+B <- cbind(c(1, b21), c(b12, 1))
+B_inv <- solve(B)
+A <- cbind(c(1, 0), c(0, 1))
+
+p1 <- B_inv %*% c(0,1)
+p2 <- A%*%p1
+p3 <- A%*%p2
+p4 <- A%*%p3
+series <- t(cbind(p1, p2, p3, p4))
+plot(series[,1], xlab = "Iteration", ylab = "Impact")
+plot(series[,2], xlab = "Iteration", ylab = "Impact")
+
+```
+The shock will never fade as the impacts seem to not return to zero and remain constant.
 ## 2
 
 # Empirical exercises
@@ -167,6 +259,7 @@ library(stargazer)
 
 
 ### 10: 
+
 Estimate the three-VAR beginning in 1961Q1 and use the ordering such that $\Delta lip_t$ is causally prior to $\Delta ur_t$ and that $\Delta ur_t$ is causally prior to $s_t$.
 ```{r}
 # Load the data
@@ -186,9 +279,7 @@ df <- df %>% mutate(dlip = log(indprod)-log(lag(indprod)),
                     s = r10 - tbill)
 ```
 In the context of chapter 5, we assume that staionarity holds. Additionally, it is provided for us that the appropriate lag length is 3. The result of the var estimation is as follows:
-```{r}
-# Eventually, stationarity checks.
-```
+
 
 ```{r VAR}
 # Estimate the 3 VAR, with the ordering dlip, dur, s
@@ -197,6 +288,13 @@ In the context of chapter 5, we assume that staionarity holds. Additionally, it 
 var <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 3, type = "none")
 summary(var)
 ```
+
+We also check for serial correlation using the adjusted Portmanteau test with 8 lags:
+```{r}
+serial.test(var, lags.pt = 8, type = "PT.adjusted")
+```
+The null of no serial correlation is rejected. Hence, there is still serial correlation in the data. Anyway, we specified the model with the number of lags given in the book, so we proceed without further changes.
+
 
 ### 10 a:
 If you perform a test to determine whether $s_t$ Granger causes $\Delta lip_t$, you should find that the F-statistic is 2.44 with a prob-value of 0.065. How do you interpret this result?
@@ -218,6 +316,7 @@ stargazer(gc_sdur, header = FALSE, summary.stat = c("n", "mean", "sd"),type = "l
 ### 10 c:
 It turns out that the correlation coefficient between $e_{1t}$ and $e_{2t}$ is -0.72. The correlation between $e_{1t}$ and $e_{3t}$ is -0.11 and between $e_{2t}$ and $e_{3t}$ is 0.10. Explain why the ordering of a Choleski composition is likely to be important for obtaining the impulse responses.
 
+The ordering of the Cholesky decomposition is important as it determines which variables are causally prior to each other. Knowing this relationship in turn allows for computing how random shocks propagate themselves in the system.
 
 ### 10 e:
 Now estimate the model using the levels of $lip_t$ and $ur_t$. Do you now find a lag length of 5 appropriate?
@@ -229,15 +328,25 @@ df <- df %>% mutate(lip = log(indprod))
  
 var_e <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 5, type = "none")
 summary(var_e)
+
 ```
-We do not think a lag length of 5 is appropriate as the AIC suggests a lag length of 1 is sufficient. 
+We do not think a lag length of 5 is appropriate as the AIC suggests a lag length of 1 is sufficient. Next, we check for serial correlation:
+
+```{r}
+serial.test(var_e, lags.pt = 8, type = "PT.adjusted")
+
+```
+We find that there is serial correlation in the specified model using the adjusted portmanteau test.
+
 
 ### 10 f:
 Obtain the impulse response function from the model using $\Delta lip_t, \Delta ur_t$ and $s_t$. Show that a positive shock to the industrial production induces a decline in the unemployment rate that lasts six quarters. Then, $\Delta ur_t$ overshoots its long run level before returning to zero.
 
 ```{r fig.height = 3, fig.width = 5}
 irf <- irf(var, ortho = TRUE, n.ahead = 10)
+
 plot(irf)
+
 ```
 
 
@@ -250,10 +359,13 @@ Reverse the ordering and explain why the results depend on whether or not $\Delt
  
 var_g <- df %>% dplyr::select(s, dur, dlip) %>% dplyr::filter(row_number() > 1) %>% as.matrix() %>% VAR(p = 3, type = "none")
 irf_g <- irf(var_g, ortho = TRUE, n.ahead = 10)
+
 ```
 
 ```{r, fig.height = 3, fig.width = 5}
+
 plot(irf_g)
+
 ```
 
 If $\Delta lip_t$ proceeds $\Delta ur_t$, then a contemporary effect on $\Delta lip_t$ affects $\Delta ur_t$, but not vice versa. On the other hand, if the reverse holds, then shocks to $\Delta lip_t$ will be delayed until next period before any noticeable change occurs to $\Delta ur_t$.

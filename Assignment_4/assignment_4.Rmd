@@ -4,7 +4,35 @@ author: "Filip Mellgren, Ismael Moreno Martinez, Athina Swahn"
 date: '2019-03-03'
 output: pdf_document
 ---
+# Part I
 
+## 1 a 
+
+Rewriting the equation in the following way: 
+
+$$-\alpha_s(r_{Lt-1}-\beta r_{St-1}-\mu)= -\Delta r_{St}+\sum^2_{i=1}a_{i,11}\Delta r_{St-1}+ \Delta a_{i,12}\Delta r_{Lt-i}+\epsilon_{St}$$
+It is clear from the equation above that all RHS variables are I(0). Therefore, 
+the linear combination $r_{Lt-1}-\beta r_{St-1}$ must be a stationary process. 
+That would mean that $r_{St}$ and $r_{Lt} must have a stochastic trend in common. 
+Hence, the cointergration vector is \[B=
+    \left[ {\begin{array}{cc}
+  1  \\
+   -\beta \\
+  \end{array} } \right]\]
+  
+The long run equilibrium is defined by $r_{Lt}= \beta r_{St}$
+
+## 1 b 
+$r_{Lt}$ does not Granger cause $r_{St}$
+$H_0: \Delta a_{i,12}=\alpha_S= 0$
+
+## 1 c 
+assuming $\alpha_s , \alpha_L >0$
+(i) $r_{Lt-1}>\beta r_{St-1}+ \mu$
+(ii) $r_{Lt-1}< \beta r_{St-1}+ \mu$
+assuming $\alpha_S >0$ and $\alpha_L = 0$
+(iii) $r_{Lt-1} > \beta r_{St-1} + \mu$
+(iv) $r_{Lt-1}< \beta r_{St-1}$
 # Part II
 Do exercise 4 (but not 4f) in the textbook (pp.402-403). Remark: It is possible that the values you obtain differ from those reported in the text to the exercise since the sample is extended. However, the main conclusions should be the same.
 

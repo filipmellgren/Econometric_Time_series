@@ -1,0 +1,108 @@
+---
+title: "Assignment 4"
+author: "Filip Mellgren, Ismael Moreno Martinez, Athina Swahn"
+date: '2019-03-03'
+output: pdf_document
+---
+
+# Part II
+Do exercise 4 (but not 4f) in the textbook (pp.402-403). Remark: It is possible that the values you obtain differ from those reported in the text to the exercise since the sample is extended. However, the main conclusions should be the same.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+```
+
+```{r}
+library(rio)
+library(tidyverse)
+library(urca)
+```
+
+```{r}
+df <- import("Assignment_4/A4_2019.dta") %>% as_tibble()
+```
+
+```{r}
+# Make the date variable a number
+df <- df %>% mutate(year = as.numeric(str_sub(DATE, start = 1, end = 4)),
+                Q = as.numeric(str_sub(DATE,-1, -1)),
+                DATE = year + (Q-1)/4)
+```
+```{r}
+
+df %>% gather(tbill, r5, r10, key = "duration", value = "rate") %>%
+  ggplot(aes(x = DATE, y = rate, color = duration)) +
+  geom_line() +
+  labs(x = "date", title = "Non stationarity", 
+       subtitle = "But common stochastic trend")
+```
+
+
+## 4a
+Pretest to show that all variables act as unit root processes using ADF with lag length equal to the longest lag length with significicant at the 5% level, including an intercept but not a time trend.
+```{r}
+# Start with a long lag length, then run several times or just use what the
+# book found directly. NB, the data set we have is longer so might have
+# changed.
+tbill_adf_7 <- ur.df(df$tbill, type = "drift", lags = 7)
+summary(tbill_adf_7)
+
+r5_adf_5 <- ur.df(df$r5, type = "drift", lags = 5)
+summary(r5_adf_5)
+
+r10_adf_7 <- ur.df(df$r10, type = "drift", lags = 7)
+summary(r10_adf_7)
+
+# May want to condense into a smaller table simialr to the one in the book
+
+```
+## 4b
+Use the Engle-Granger procedure to estimate cointergrating relationships.
+
+We begin by running the regression:
+
+$Tbill_t = a_0 + a_1R5_t + a_2R10_t$
+```{r}
+# Run rgression from book
+t_dep_fit <- lm(tbill ~ r5 + r10, data = df)
+summary(t_dep_fit)
+residuals <- t_dep_fit$residuals
+```
+The estimates differ from those in the book. However, when we estimated the same regression using the data used in the book, we obtianed similar values. We proceed by testing if the residuals are serially conintegrated using ADF-tests.
+
+We plot the residual series:
+```{r}
+df <- df %>% mutate(residuals = residuals)
+df %>% ggplot(aes(x = DATE, y = residuals)) +
+  geom_line() +
+  labs(title = "Could be stationary")
+```
+
+
+
+Next, we perform ADF test on residuals. We select lag length using the AIC criteria, with a maximal lag length of 10.
+```{r}
+adf_res <- ur.df(residuals, type = "none", lags = 10, selectlags = "AIC")
+summary(adf_res) 
+```
+We need Engle - Granger critical values to evaluate the test statistic,`r round(adf_res@teststat, 3)`.
+
+## 4c, similar to above
+
+
+## 4d
+Use the Johansen procedure
+```{r}
+# Function to use: ca.jo from the urca package
+# This link might be helpful:
+#https://www.quantstart.com/articles/Johansen-Test-for-Cointegrating-Time-Series-Analysis-in-R
+```
+
+
+## 4e
+Check to determine whether the individual interest pairs are cointegrated. In particular, is R5 with cointegrated with R10.
+
+```{r}
+# Very similar to what we did in b & c, just with one variable less.
+```
+

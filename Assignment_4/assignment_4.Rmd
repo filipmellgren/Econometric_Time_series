@@ -47,7 +47,7 @@ library(urca)
 ```
 
 ```{r}
-df <- import("Assignment_4/A4_2019.dta") %>% as_tibble()
+df <- import("A4_2019.dta") %>% as_tibble()
 ```
 
 ```{r}

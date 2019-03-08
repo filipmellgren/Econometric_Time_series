@@ -1,0 +1,97 @@
+---
+title: "Notes, pc-lab"
+author: "Filip Mellgren"
+date: '2019-03-08'
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(rio)
+library(urca)
+library(vars)
+library(lmtest)
+```
+```{r}
+df <- import("PC_lab4/Data_PC4.dta")
+df <- as_tibble(df)
+```
+```{r}
+df <- df %>% mutate(time = row_number())
+```
+
+```{r}
+df %>% gather(key = "key", value = "value", y, z, w) %>%
+  ggplot(aes(x = time, y = value, color = key)) +
+  geom_line()
+```
+```{r EG}
+# Engle Granger methodology
+
+# Unit root pre-testing, DFgls
+dfgls_y <- ur.ers(df$y, type = "DF-GLS", model = "constant", lag.max = 8)
+dfgls_z <- ur.ers(df$z, type = "DF-GLS", model = "constant", lag.max = 8)
+dfgls_w <- ur.ers(df$w, type = "DF-GLS", model = "constant", lag.max = 8)
+
+summary(dfgls_y) # Not rejecting null of of a unit root
+summary(dfgls_z) # Not rejecting null of of a unit root
+summary(dfgls_w) # Not rejecting null of of a unit root
+
+# indication that all contain a unit root, hence they are all I(1)
+
+# Cointegration Testing
+lm_y <- lm(data = df, y ~ z + w)
+residuals_y <- lm_y$residuals
+lm_z <- lm(data = df, z ~ y + w)
+residuals_z <- lm_z$residuals
+lm_w <- lm(data = df, w ~ y + z)
+residuals_w <- lm_w$residuals
+
+df <- df %>% mutate(residuals_y = residuals_y,
+                    residuals_z = residuals_z,
+                    residuals_w = residuals_w)
+
+df %>% gather(key = dep_var, value = residuals, 
+              residuals_y, residuals_z, residuals_w) %>%
+ggplot(aes(x = time, y = residuals, color = dep_var)) +
+  geom_line() +
+  labs(title = "White noise?")
+
+# testing the null of a unit root same as test of no cointegration
+df_resy <- ur.df(residuals_y, type = "none", lags = 4) #IRL, 4 must be evaluatd
+df_resz <- ur.df(residuals_z, type = "none", lags = 4)
+df_resw <- ur.df(residuals_w, type = "none", lags = 4)
+
+df_resy
+df_resz
+df_resw
+
+# reject all of them, hence they are cointegrated. NEW CRITICAL VALUES
+
+# VECM Estimation
+df <- df %>% mutate(dy = y - lag(y),
+              dz = z - lag(z),
+              dw = w - lag(w))
+
+dy <- ts(df$dy)
+dz <- ts(df$dz)
+dw <- ts(df$dw)
+ts <- window(ts.union(dy, dz, dw))
+ts <- ts[2:100,]
+
+var <- VAR(ts, p = 1, exogen = lag(residuals_w)[2:100]) # Same as Enders p367
+var(ts)
+# Diagnostic checking
+# Multivariate portmanteau test for serially correlated errors.
+serialcorr <- serial.test(var, lags.pt = 8, type = "PT.asymptotic")
+
+
+```
+```{r IRF}
+plot(irf(var))
+
+```
+

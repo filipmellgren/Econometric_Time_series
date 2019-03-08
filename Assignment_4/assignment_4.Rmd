@@ -61,18 +61,20 @@ df <- df %>% mutate(year = as.numeric(str_sub(DATE, start = 1, end = 4)),
                 Q = as.numeric(str_sub(DATE,-1, -1)),
                 DATE = year + (Q-1)/4)
 ```
+Begin by plotting the series:
 ```{r}
 
 df %>% gather(tbill, r5, r10, key = "duration", value = "rate") %>%
   ggplot(aes(x = DATE, y = rate, color = duration)) +
   geom_line() +
   labs(x = "date", title = "Non stationarity", 
-       subtitle = "But common stochastic trend")
+       subtitle = "But potentially a common stochastic trend")
 ```
 
 
 ## 4a
 Pretest to show that all variables act as unit root processes using ADF with lag length equal to the longest lag length with significicant at the 5% level, including an intercept but not a time trend.
+
 ```{r}
 # Start with a long lag length, then run several times or just use what the
 # book found directly. NB, the data set we have is longer so might have
@@ -80,15 +82,18 @@ Pretest to show that all variables act as unit root processes using ADF with lag
 tbill_adf_7 <- ur.df(df$tbill, type = "drift", lags = 7)
 summary(tbill_adf_7)
 
-r5_adf_5 <- ur.df(df$r5, type = "drift", lags = 5)
+r5_adf_5 <- ur.df(df$r5, type = "drift", lags = 7)
 summary(r5_adf_5)
 
-r10_adf_7 <- ur.df(df$r10, type = "drift", lags = 7)
+r10_adf_7 <- ur.df(df$r10, type = "drift", lags = 5)
 summary(r10_adf_7)
 
 # May want to condense into a smaller table simialr to the one in the book
 
 ```
+The appropriate lag lengths for the extended data set are 7 for the tbill and r5, and 5 for r10, which differs somewhat from the lag lengths in Enders p.402.
+Comment, can we reject the null of a unit root? 
+
 ## 4b
 Use the Engle-Granger procedure to estimate cointergrating relationships.
 
@@ -113,15 +118,39 @@ df %>% ggplot(aes(x = DATE, y = residuals)) +
 
 
 
-Next, we perform ADF test on residuals. We select lag length using the AIC criteria, with a maximal lag length of 10.
+Next, we perform ADF test on residuals (i.e. Engle Granger). We select lag length using the AIC criteria, with a maximal lag length of 10.
 ```{r}
 adf_res <- ur.df(residuals, type = "none", lags = 10, selectlags = "AIC")
 summary(adf_res) 
 ```
-We need Engle - Granger critical values to evaluate the test statistic,`r round(adf_res@teststat, 3)`.
+We need Engle - Granger critical values to evaluate the test statistic,`r round(adf_res@teststat, 3)` against -3.785. The test statistic is small enough for us to reject the null of the series having a unit root, hence the series is stationary and there is cointegration between the variables.
+
+Next, we test whether the residuals follow a white noise process. We use the Ljung box test with a lag length of 9 (the optimal number by the AIC in the ADF test).
+
+```{r}
+Box.test(residuals, lag = 9, type = "Ljung-Box")
+```
+Given the low p-value, we reject the null hypothesis of independence, meaning the residuals are correlated. Anyway, we move on.
 
 ## 4c, similar to above
+```{r}
+# Run rgression from book
+t_dep_fit <- lm(r10 ~ tbill + r5, data = df)
+summary(t_dep_fit)
+residuals <- t_dep_fit$residuals
+```
+```{r}
+df <- df %>% mutate(residuals = residuals)
+df %>% ggplot(aes(x = DATE, y = residuals)) +
+  geom_line() +
+  labs(title = "Could be stationary", y = "R10, residuals")
+```
 
+```{r}
+adf_res <- ur.df(residuals, type = "none", lags = 10, selectlags = "AIC")
+summary(adf_res) 
+```
+A test statistic value of `r adf_res@teststat` is obtained and evaluated against -3.785, and we are not able to reject the null of a unit root. This means we can't draw the conclusion that the three variables are cointegrated form this test. This contradicts what we found earlier and indicates that the Engle Granger test might not be the most suitable test for cointegration.
 
 ## 4d
 Use the Johansen procedure

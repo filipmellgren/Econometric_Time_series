@@ -33,6 +33,11 @@ assuming $\alpha_s , \alpha_L >0$
 assuming $\alpha_S >0$ and $\alpha_L = 0$
 (iii) $r_{Lt-1} > \beta r_{St-1} + \mu$
 (iv) $r_{Lt-1}< \beta r_{St-1}$
+
+## 1d
+We can't run the regression because it's a spurious correlation. This means the residuals are serially correlated, and that there is no linear relationship that can mitigate this. Hence, any estimated regression will suffer rom having residuals integrated of order one.
+
+
 # Part II
 Do exercise 4 (but not 4f) in the textbook (pp.402-403). Remark: It is possible that the values you obtain differ from those reported in the text to the exercise since the sample is extended. However, the main conclusions should be the same.
 

@@ -24,14 +24,26 @@ The long run equilibrium is defined by $r_{Lt}= \beta r_{St}$
 
 ## 1 b 
 $r_{Lt}$ does not Granger cause $r_{St}$
-$H_0: \Delta a_{i,12}=\alpha_S= 0$
+$H_0: \alpha_S = \alpha_{1, 12}=\alpha_{2, 12} = 0$
 
 ## 1 c 
 assuming $\alpha_s , \alpha_L >0$
-(i) $r_{Lt-1}>\beta r_{St-1}+ \mu$
+(i) $r_{Lt-1}>\beta r_{St-1}+ \mu$ means $r_{Lt}$ is too high and that we'll move back. 
+
+* The (expected) change in period $t$ in the $R_{Lt}$ direction is: $-\alpha_L(r_{Lt-1}-\beta_{} r_{St-1}-\mu) + a_{1,22}\Delta r_{Lt-1}$ and in the $r_{St}$ direction is: $a_{1,12}\Delta r_{Lt-1}$
+
+* The (expected) change in period $t+1$ in the $R_{Lt}$ direction is: 
+
+- $-\alpha_L(r_{Lt}-\beta_{} r_{St-1}-\mu) +a_{1,22}\Delta r_{Lt}+ a_{2,22}\Delta r_{Lt-1}$  
+
+-In the the $r_{St}$ direction is: $a_{1,12}\Delta r_{Lt-1}$
+
+
 (ii) $r_{Lt-1}< \beta r_{St-1}+ \mu$
 assuming $\alpha_S >0$ and $\alpha_L = 0$
+
 (iii) $r_{Lt-1} > \beta r_{St-1} + \mu$
+
 (iv) $r_{Lt-1}< \beta r_{St-1}$
 
 ## 1d

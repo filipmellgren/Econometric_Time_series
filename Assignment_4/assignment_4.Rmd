@@ -101,7 +101,7 @@ We begin by running the regression:
 
 $Tbill_t = a_0 + a_1R5_t + a_2R10_t$
 ```{r}
-# Run rgression from book
+# Run regression from book
 t_dep_fit <- lm(tbill ~ r5 + r10, data = df)
 summary(t_dep_fit)
 residuals <- t_dep_fit$residuals
@@ -158,7 +158,23 @@ Use the Johansen procedure
 # Function to use: ca.jo from the urca package
 # This link might be helpful:
 #https://www.quantstart.com/articles/Johansen-Test-for-Cointegrating-Time-Series-Analysis-in-R
+
+tbill <- ts(df$tbill)
+r5 <- ts(df$r5)
+r10 <- ts(df$r10)
+ts <- window(ts.union(tbill, r5, r10))
+
+summary(ca.jo(ts, type = "trace", ecdet = "const", K = 7))
 ```
+i) By the trace test, we can reject that there are 0 distinct cointegrating vectors, meaning there is some cointegration. However, we can't reject that there are less or equal to 1 cointegrating relationships, so we conclude that there is only one cointegrating relationship present in the data.
+```{r}
+summary(ca.jo(ts, type = "eigen", ecdet = "const", K = 7))
+
+```
+
+ii) The observed test statistics support the notion that there is one cointegrating relationship present in the data.
+
+We don't verify that the cointrgrated vector is as was stated in the book since the data has changed. In theory, we'd obtain a zero vector after applying the constants to the data, but we don't have the proper constants.
 
 
 ## 4e
@@ -166,5 +182,20 @@ Check to determine whether the individual interest pairs are cointegrated. In pa
 
 ```{r}
 # Very similar to what we did in b & c, just with one variable less.
+# Run rgression from book
+t_dep_fit <- lm(r5 ~ r10, data = df)
+summary(t_dep_fit)
+residuals <- t_dep_fit$residuals
 ```
 
+```{r}
+df <- df %>% mutate(residuals = residuals)
+df %>% ggplot(aes(x = DATE, y = residuals)) +
+  geom_line() +
+  labs(title = "Could be stationary")
+```
+```{r}
+adf_res <- ur.df(residuals, type = "none", lags = 10, selectlags = "AIC")
+summary(adf_res) 
+```
+The observed value of the test statistic is `r adf_res@teststat` which is almost small enough to reject the null of no cointegrating relationship at the 5% level.

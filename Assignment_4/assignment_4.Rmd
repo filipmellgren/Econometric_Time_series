@@ -37,8 +37,8 @@ Starting in equilibrium at time $t$, the error correction is as follows for case
 
 At time $t+1$ we obtain the expected change:
 
-* $\Delta r_{St+1} = \alpha_S (r-L_{t}- \beta r_{St} -\mu) + a_{1,11} {\Delta r_{S t} + a_{1,12} {\Delta r_{L t} $
-* $\Delta r_{Lt+1} = \alpha_L (r-L_{t}- \beta r_{St} -\mu) + a_{1,21} {\Delta r_{S t} + a_{1,22} {\Delta r_{L t}$
+* $\Delta r_{St+1} = \alpha_S (r_{Lt}- \beta r_{St} -\mu) + a_{1,11} \Delta r_{S t} + a_{1,12} \Delta r_{L t}$
+* $\Delta r_{Lt+1} = \alpha_L (r_{Lt}- \beta r_{St} -\mu) + a_{1,21} \Delta r_{S t} + a_{1,22} \Delta r_{L t}$
 
 And so on until we have that the change in 0 arising from $r_{Lt}= \beta r_{St} +\mu$ and that the two prior lags are also zero, which will happen in a converging way, with changes diminishing over time.
 
@@ -51,8 +51,10 @@ Assuming $\alpha_L = 0$ simplifies the model. In period $t$:
 
 In $t +1$:
 
-* $\Delta r_{St+1} = \alpha_S (r-L_{t}- \beta r_{St} -\mu) + a_{1,11} {\Delta r_{S t} + a_{1,12} {\Delta r_{L t} $
-* $\Delta r_{Lt+1} = a_{1,21} {\Delta r_{S t}$
+* $\Delta r_{St+1} = \alpha_S (r_{Lt}- \beta r_{St} -\mu) + a_{1,11} \Delta r_{S t} + a_{1,12} \Delta r_{Lt}$
+* $\Delta r_{Lt+1} = a_{1,21} \Delta r_{St}$
+
+
 
 ## 1d
 We can't run the regression because it's a spurious correlation. This means the residuals are serially correlated, and that there is no linear relationship that can mitigate this. Hence, any estimated regression will suffer rom having residuals integrated of order one.

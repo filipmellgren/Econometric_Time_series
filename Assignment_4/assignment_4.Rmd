@@ -13,7 +13,7 @@ Rewriting the equation in the following way:
 $$-\alpha_s(r_{Lt-1}-\beta r_{St-1}-\mu)= -\Delta r_{St}+\sum^2_{i=1}a_{i,11}\Delta r_{St-1}+ \Delta a_{i,12}\Delta r_{Lt-i}+\epsilon_{St}$$
 It is clear from the equation above that all RHS variables are I(0). Therefore, 
 the linear combination $r_{Lt-1}-\beta r_{St-1}$ must be a stationary process. 
-That would mean that $r_{St}$ and $r_{Lt} must have a stochastic trend in common. 
+That would mean that $r_{St}$ and $r_{Lt}$ must have a stochastic trend in common. 
 Hence, the cointergration vector is \[B=
     \left[ {\begin{array}{cc}
   1  \\
@@ -23,28 +23,36 @@ Hence, the cointergration vector is \[B=
 The long run equilibrium is defined by $r_{Lt}= \beta r_{St}$
 
 ## 1 b 
-$r_{Lt}$ does not Granger cause $r_{St}$
+The notion that $r_{Lt}$ does not Granger cause $r_{St}$ means that past realisations of $r_{Ls}, s < t, $ don't predict $r_{St}$. Formally:
+
 $H_0: \alpha_S = \alpha_{1, 12}=\alpha_{2, 12} = 0$
 
 ## 1 c 
-assuming $\alpha_s , \alpha_L >0$
-(i) $r_{Lt-1}>\beta r_{St-1}+ \mu$ means $r_{Lt}$ is too high and that we'll move back. 
+Because of the cointegrating relationship, any deviations from the long run equilibrium will revert back, as the residual series follow a stationary process. The return to the equilibrium is descibed by the bivariate error correction system.
 
-* The (expected) change in period $t$ in the $R_{Lt}$ direction is: $-\alpha_L(r_{Lt-1}-\beta_{} r_{St-1}-\mu) + a_{1,22}\Delta r_{Lt-1}$ and in the $r_{St}$ direction is: $a_{1,12}\Delta r_{Lt-1}$
+Starting in equilibrium at time $t$, the error correction is as follows for case i) and ii):
 
-* The (expected) change in period $t+1$ in the $R_{Lt}$ direction is: 
+* $\Delta r_{St} = \alpha_S (r-L_{t-1}- \beta r_{St-1} -\mu)$
+* $\Delta r_{Lt} = \alpha_L (r-L_{t-1}- \beta r_{St-1} -\mu)$
 
-- $-\alpha_L(r_{Lt}-\beta_{} r_{St-1}-\mu) +a_{1,22}\Delta r_{Lt}+ a_{2,22}\Delta r_{Lt-1}$  
+At time $t+1$ we obtain the expected change:
 
--In the the $r_{St}$ direction is: $a_{1,12}\Delta r_{Lt-1}$
+* $\Delta r_{St+1} = \alpha_S (r-L_{t}- \beta r_{St} -\mu) + a_{1,11} {\Delta r_{S t} + a_{1,12} {\Delta r_{L t} $
+* $\Delta r_{Lt+1} = \alpha_L (r-L_{t}- \beta r_{St} -\mu) + a_{1,21} {\Delta r_{S t} + a_{1,22} {\Delta r_{L t}$
 
+And so on until we have that the change in 0 arising from $r_{Lt}= \beta r_{St} +\mu$ and that the two prior lags are also zero, which will happen in a converging way, with changes diminishing over time.
 
-(ii) $r_{Lt-1}< \beta r_{St-1}+ \mu$
-assuming $\alpha_S >0$ and $\alpha_L = 0$
+In i), the system long run rate is too high relative to the short run rate, and in ii) the opposite holds. The two rates will adjust until they reach equilibrium.
 
-(iii) $r_{Lt-1} > \beta r_{St-1} + \mu$
+Assuming $\alpha_L = 0$ simplifies the model. In period $t$:
 
-(iv) $r_{Lt-1}< \beta r_{St-1}$
+* $\Delta r_{St} = \alpha_S (r-L_{t-1}- \beta r_{St-1} -\mu)$
+* $\Delta r_{Lt} = 0$
+
+In $t +1$:
+
+* $\Delta r_{St+1} = \alpha_S (r-L_{t}- \beta r_{St} -\mu) + a_{1,11} {\Delta r_{S t} + a_{1,12} {\Delta r_{L t} $
+* $\Delta r_{Lt+1} = a_{1,21} {\Delta r_{S t}$
 
 ## 1d
 We can't run the regression because it's a spurious correlation. This means the residuals are serially correlated, and that there is no linear relationship that can mitigate this. Hence, any estimated regression will suffer rom having residuals integrated of order one.
@@ -74,6 +82,7 @@ df <- df %>% mutate(year = as.numeric(str_sub(DATE, start = 1, end = 4)),
                 DATE = year + (Q-1)/4)
 ```
 Begin by plotting the series:
+
 ```{r}
 
 df %>% gather(tbill, r5, r10, key = "duration", value = "rate") %>%
@@ -103,6 +112,7 @@ summary(r10_adf_7)
 # May want to condense into a smaller table simialr to the one in the book
 
 ```
+
 The appropriate lag lengths for the extended data set are 7 for the tbill and r5, and 5 for r10, which differs somewhat from the lag lengths in Enders p.402.
 Comment, can we reject the null of a unit root? 
 
@@ -112,15 +122,18 @@ Use the Engle-Granger procedure to estimate cointergrating relationships.
 We begin by running the regression:
 
 $Tbill_t = a_0 + a_1R5_t + a_2R10_t$
+
 ```{r}
 # Run regression from book
 t_dep_fit <- lm(tbill ~ r5 + r10, data = df)
 summary(t_dep_fit)
 residuals <- t_dep_fit$residuals
 ```
+
 The estimates differ from those in the book. However, when we estimated the same regression using the data used in the book, we obtianed similar values. We proceed by testing if the residuals are serially conintegrated using ADF-tests.
 
 We plot the residual series:
+
 ```{r}
 df <- df %>% mutate(residuals = residuals)
 df %>% ggplot(aes(x = DATE, y = residuals)) +
@@ -142,9 +155,11 @@ Next, we test whether the residuals follow a white noise process. We use the Lju
 ```{r}
 Box.test(residuals, lag = 9, type = "Ljung-Box")
 ```
+
 Given the low p-value, we reject the null hypothesis of independence, meaning the residuals are correlated. Anyway, we move on.
 
-## 4c, similar to above
+## 4c
+
 ```{r}
 # Run rgression from book
 t_dep_fit <- lm(r10 ~ tbill + r5, data = df)
@@ -162,10 +177,12 @@ df %>% ggplot(aes(x = DATE, y = residuals)) +
 adf_res <- ur.df(residuals, type = "none", lags = 10, selectlags = "AIC")
 summary(adf_res) 
 ```
+
 A test statistic value of `r adf_res@teststat` is obtained and evaluated against -3.785, and we are not able to reject the null of a unit root. This means we can't draw the conclusion that the three variables are cointegrated form this test. This contradicts what we found earlier and indicates that the Engle Granger test might not be the most suitable test for cointegration.
 
 ## 4d
-Use the Johansen procedure
+Use the Johansen procedure:
+
 ```{r}
 # Function to use: ca.jo from the urca package
 # This link might be helpful:
@@ -178,7 +195,9 @@ ts <- window(ts.union(tbill, r5, r10))
 
 summary(ca.jo(ts, type = "trace", ecdet = "const", K = 7))
 ```
+
 i) By the trace test, we can reject that there are 0 distinct cointegrating vectors, meaning there is some cointegration. However, we can't reject that there are less or equal to 1 cointegrating relationships, so we conclude that there is only one cointegrating relationship present in the data.
+
 ```{r}
 summary(ca.jo(ts, type = "eigen", ecdet = "const", K = 7))
 
@@ -190,6 +209,7 @@ We don't verify that the cointrgrated vector is as was stated in the book since 
 
 
 ## 4e
+
 Check to determine whether the individual interest pairs are cointegrated. In particular, is R5 with cointegrated with R10.
 
 ```{r}
@@ -210,4 +230,5 @@ df %>% ggplot(aes(x = DATE, y = residuals)) +
 adf_res <- ur.df(residuals, type = "none", lags = 10, selectlags = "AIC")
 summary(adf_res) 
 ```
+
 The observed value of the test statistic is `r adf_res@teststat` which is almost small enough to reject the null of no cointegrating relationship at the 5% level.

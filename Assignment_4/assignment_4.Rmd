@@ -23,22 +23,22 @@ Hence, the cointergration vector is \[B=
 The long run equilibrium is defined by $r_{Lt}= \beta r_{St}$
 
 ## 1 b 
-The notion that $r_{Lt}$ does not Granger cause $r_{St}$ means that past realisations of $r_{Ls}, s < t, $ don't predict $r_{St}$. Formally:
+The notion that $r_{Lt}$ does not Granger cause $r_{St}$ means that past realisations of $r_{Ls}, s < t$ don't predict $r_{St}$. Formally:
 
 $H_0: \alpha_S = \alpha_{1, 12}=\alpha_{2, 12} = 0$
 
-## 1 c 
-Because of the cointegrating relationship, any deviations from the long run equilibrium will revert back, as the residual series follow a stationary process. The return to the equilibrium is descibed by the bivariate error correction system.
+## 1 c
+Because of the cointegrating relationship, any deviations from the long run equilibrium will revert back, as the residual series follow a stationary process. The return to the equilibrium is described by the bivariate error correction system.
 
 Starting in equilibrium at time $t$, the error correction is as follows for case i) and ii):
 
-* $\Delta r_{St} = \alpha_S (r-L_{t-1}- \beta r_{St-1} -\mu)$
-* $\Delta r_{Lt} = \alpha_L (r-L_{t-1}- \beta r_{St-1} -\mu)$
+* $\Delta r_{St} = \alpha_S (r_{Lt-1}- \beta r_{St-1} -\mu)$
+* $\Delta r_{Lt} = -\alpha_L (r_{Lt-1}- \beta r_{St-1} -\mu)$
 
 At time $t+1$ we obtain the expected change:
 
 * $\Delta r_{St+1} = \alpha_S (r_{Lt}- \beta r_{St} -\mu) + a_{1,11} \Delta r_{S t} + a_{1,12} \Delta r_{L t}$
-* $\Delta r_{Lt+1} = \alpha_L (r_{Lt}- \beta r_{St} -\mu) + a_{1,21} \Delta r_{S t} + a_{1,22} \Delta r_{L t}$
+* $\Delta r_{Lt+1} = -\alpha_L (r_{Lt}- \beta r_{St} -\mu) + a_{1,21} \Delta r_{S t} + a_{1,22} \Delta r_{L t}$
 
 And so on until we have that the change in 0 arising from $r_{Lt}= \beta r_{St} +\mu$ and that the two prior lags are also zero, which will happen in a converging way, with changes diminishing over time.
 
@@ -54,7 +54,12 @@ In $t +1$:
 * $\Delta r_{St+1} = \alpha_S (r_{Lt}- \beta r_{St} -\mu) + a_{1,11} \Delta r_{S t} + a_{1,12} \Delta r_{Lt}$
 * $\Delta r_{Lt+1} = a_{1,21} \Delta r_{St}$
 
+## 1c (v2)
+Assume, for simplicity, that the disequilibrium is of magnitude 1 in all of the cases. In that case, controlling for previous adjustments, the average impact of this disequilibrium on the adjustments at time t will be of $\alpha_S$ for $r_{St}$ and of $-\alpha_L$ for $r_{Lt}$. Notice that in case (i), given the signs of these effects, this reduces the LHS and augments the RHS. This makes the series to come closer to the equilibrium where $r_{Lt}=\beta r_{St}+\mu$. At the same time, this also happens in case (ii), but in the opposite direction.
 
+Cases (iii) and (iv) are pretty similar, nevertheless, here only $r_{St}$ makes a direct response towards the equilibrium. See Figure 1 for a graphic representation of the adjustments departing from disequilibriums (i), (ii), (iii) and (iv).
+
+![Error Correction Adjustments](pic1.jpg)
 
 ## 1d
 We can't run the regression because it's a spurious correlation. This means the residuals are serially correlated, and that there is no linear relationship that can mitigate this. Hence, any estimated regression will suffer rom having residuals integrated of order one.

@@ -1,7 +1,7 @@
 ---
 title: "Assignment 4"
 author: "Filip Mellgren, Ismael Moreno Martinez, Athina Swahn"
-date: '2019-03-03'
+date: '2019-03-10'
 output: pdf_document
 ---
 # Part I
@@ -54,10 +54,7 @@ In $t +1$:
 * $\Delta r_{St+1} = \alpha_S (r_{Lt}- \beta r_{St} -\mu) + a_{1,11} \Delta r_{S t} + a_{1,12} \Delta r_{Lt}$
 * $\Delta r_{Lt+1} = a_{1,21} \Delta r_{St}$
 
-## 1c (v2)
-Because of the cointegrating relationship, any deviations from the long run equilibrium will revert back, as the residual series follow a stationary process. The return to the equilibrium is described by the bivariate error correction system.
-
-Assume, for simplicity, that the disequilibrium is of magnitude 1 in all of the cases. In that case, controlling for previous adjustments, the average impact of this disequilibrium on the adjustments at time t will be of $\alpha_S$ for $r_{St}$ and of $-\alpha_L$ for $r_{Lt}$. Notice that in case (i), given the signs of these effects, this reduces the LHS and augments the RHS. This makes the series to come closer to the equilibrium where $r_{Lt}=\beta r_{St}+\mu$. At the same time, this also happens in case (ii), but in the opposite direction. If the time series remain apart from the long-run relation, this process of adjustments will be re-iterated, reducing the disequilibrium until it comes to meet the co-integration vector.
+Assuming for simplicity, that the disequilibrium is of magnitude 1 in all of the cases. In that case, controlling for previous adjustments, the average impact of this disequilibrium on the adjustments at time t will be of $\alpha_S$ for $r_{St}$ and of $-\alpha_L$ for $r_{Lt}$. Notice that in case (i), given the signs of these effects, this reduces the LHS and augments the RHS. This makes the series to come closer to the equilibrium where $r_{Lt}=\beta r_{St}+\mu$. At the same time, this also happens in case (ii), but in the opposite direction. If the time series remain apart from the long-run relation, this process of adjustments will be re-iterated, reducing the disequilibrium until it comes to meet the co-integration vector.
 
 Cases (iii) and (iv) are pretty similar, nevertheless, here only $r_{St}$ makes a direct response towards the equilibrium. See Figure 1 for a graphic representation of the adjustments departing from disequilibriums (i), (ii), (iii) and (iv).
 
@@ -240,4 +237,4 @@ adf_res <- ur.df(residuals, type = "none", lags = 10, selectlags = "AIC")
 summary(adf_res) 
 ```
 
-The observed value of the test statistic is `r adf_res@teststat` which is almost small enough to reject the null of no cointegrating relationship at the 5% level.
+The observed value of the test statistic is `r adf_res@teststat` which is not small enough to reject the null of no cointegrating relationship at the 5% level. Remember, we do not use the critical values above, but the Engle Granger cirtical values. For our sample with two variables, the 5% critical value is about -3.37.

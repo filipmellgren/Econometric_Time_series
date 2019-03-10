@@ -55,14 +55,16 @@ In $t +1$:
 * $\Delta r_{Lt+1} = a_{1,21} \Delta r_{St}$
 
 ## 1c (v2)
-Assume, for simplicity, that the disequilibrium is of magnitude 1 in all of the cases. In that case, controlling for previous adjustments, the average impact of this disequilibrium on the adjustments at time t will be of $\alpha_S$ for $r_{St}$ and of $-\alpha_L$ for $r_{Lt}$. Notice that in case (i), given the signs of these effects, this reduces the LHS and augments the RHS. This makes the series to come closer to the equilibrium where $r_{Lt}=\beta r_{St}+\mu$. At the same time, this also happens in case (ii), but in the opposite direction.
+Because of the cointegrating relationship, any deviations from the long run equilibrium will revert back, as the residual series follow a stationary process. The return to the equilibrium is described by the bivariate error correction system.
+
+Assume, for simplicity, that the disequilibrium is of magnitude 1 in all of the cases. In that case, controlling for previous adjustments, the average impact of this disequilibrium on the adjustments at time t will be of $\alpha_S$ for $r_{St}$ and of $-\alpha_L$ for $r_{Lt}$. Notice that in case (i), given the signs of these effects, this reduces the LHS and augments the RHS. This makes the series to come closer to the equilibrium where $r_{Lt}=\beta r_{St}+\mu$. At the same time, this also happens in case (ii), but in the opposite direction. If the time series remain apart from the long-run relation, this process of adjustments will be re-iterated, reducing the disequilibrium until it comes to meet the co-integration vector.
 
 Cases (iii) and (iv) are pretty similar, nevertheless, here only $r_{St}$ makes a direct response towards the equilibrium. See Figure 1 for a graphic representation of the adjustments departing from disequilibriums (i), (ii), (iii) and (iv).
 
 ![Error Correction Adjustments](pic1.jpg)
 
 ## 1d
-We can't run the regression because it's a spurious correlation. This means the residuals are serially correlated, and that there is no linear relationship that can mitigate this. Hence, any estimated regression will suffer rom having residuals integrated of order one.
+We can't run the regression because it's a spurious correlation. Given that $r_{Lt}-\beta r_{St}-\mu=\epsilon_t \sim I(1)$, you cannot assume stationarity of the error term. Hence, none of the regular assumptions for a valid OLS error term apply in this case (e.g.  $E(\epsilon_t) \neq 0$). On the context of an VECM, this would lead to an imbalance as you would be estimating an stationationary process ($\Delta r_{St}$) through an I(1) regressor.
 
 
 # Part II
